@@ -1,0 +1,24 @@
+data:
+  source: "csv"  # Options: "csv", "yfinance"
+  csv_path: "stock_data.csv"
+  tickers: ["AAPL", "GOOGL"]
+  start_date: "2020-01-01"
+  end_date: "2023-01-01"
+
+env:
+  initial_balance: 1000000
+  transaction_cost: 0.001
+  trading_days_per_year: 252
+
+agent:
+  rl_agent_type: "TD3"  # Options: "TD3", "DDPG", etc.
+  market_observer: "MLP"  # Options: "MLP", "LSTM"
+  learning_rate: 0.001
+  gamma: 0.99
+  tau: 0.005
+
+train:
+  num_episodes: 100
+  batch_size: 64
+  val_split: 0.15
+  train_split: 0.7

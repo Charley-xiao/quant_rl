@@ -29,7 +29,7 @@ class MarketObserverLSTM(nn.Module):
         return self.fc(lstm_out[:, -1, :])
 
 class MarketObserver:
-    def __init__(self, model_type="MLP", input_dim=10, hidden_dim=64, output_dim=1, lr=0.001):
+    def __init__(self, model_type="MLP", input_dim=10, hidden_dim=64, output_dim=1, lr=0.001, device='cpu'):
         """
         Initializes the Market Observer model.
         :param model_type: "MLP" for a Multi-Layer Perceptron model, "LSTM" for a Long Short-Term Memory model.
@@ -39,10 +39,11 @@ class MarketObserver:
         :param lr: Learning rate for the optimizer.
         """
         self.model_type = model_type
+        self.device = device
         if model_type == "MLP":
-            self.model = MarketObserverMLP(input_dim, hidden_dim, output_dim)
+            self.model = MarketObserverMLP(input_dim, hidden_dim, output_dim).to(device)
         elif model_type == "LSTM":
-            self.model = MarketObserverLSTM(input_dim, hidden_dim, output_dim)
+            self.model = MarketObserverLSTM(input_dim, hidden_dim, output_dim).to(device)
         else:
             raise ValueError("Invalid model type. Choose 'MLP' or 'LSTM'.")
 
@@ -57,8 +58,8 @@ class MarketObserver:
         """
         self.model.eval()  # Set the model to evaluation mode
         with torch.no_grad():
-            inputs = torch.tensor(historical_data, dtype=torch.float32).unsqueeze(0)
-            predictions = self.model(inputs)
+            inputs = torch.tensor(historical_data, dtype=torch.float32).unsqueeze(0).to(self.device)
+            predictions = self.model(inputs).detach().cpu()
         return predictions
 
     def update_model(self, historical_data, actual_trends):
@@ -69,8 +70,8 @@ class MarketObserver:
         :return: Loss value after the update.
         """
         self.model.train()  # Set the model to training mode
-        inputs = torch.tensor(historical_data, dtype=torch.float32).unsqueeze(0)
-        targets = torch.tensor(actual_trends, dtype=torch.float32).unsqueeze(0)
+        inputs = torch.tensor(historical_data, dtype=torch.float32).unsqueeze(0).to(self.device)
+        targets = torch.tensor(actual_trends, dtype=torch.float32).unsqueeze(0).to(self.device)
 
         # Forward pass
         predictions = self.model(inputs)

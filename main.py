@@ -5,6 +5,7 @@ from envs import TradingEnv, Portfolio
 from agents import RLAgent, SolverAgent, MarketObserver
 from utils import Metrics
 import numpy as np
+import torch
 
 def load_config(config_path):
     with open(config_path, 'r') as f:
@@ -18,6 +19,8 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
     config = load_config(args.config)
+
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     # Step 1: Load Market Data
     loader = DataLoader()
@@ -48,14 +51,14 @@ if __name__ == '__main__':
 
     # RL Agent Initialization with flexible options
     rl_agent = RLAgent(state_dim=train_data.shape[1], action_dim=train_data.shape[1], max_action=1, 
-                       gamma=config['agent']['gamma'], tau=config['agent']['tau'])
+                       gamma=config['agent']['gamma'], tau=config['agent']['tau'], device=device)
     
     # Solver Agent for risk minimization
     solver_agent = SolverAgent(n_assets=train_data.shape[1], risk_function=lambda w: np.std(w))  # Example risk function
     
     # Market Observer Model Selection
     market_observer = MarketObserver(model_type=config['agent']['market_observer'], 
-                                     input_dim=train_data.shape[1])
+                                     input_dim=train_data.shape[1], device=device)
 
     # Step 4: Training Loop with adjustable number of episodes
     num_episodes = config['train']['num_episodes']
@@ -75,8 +78,11 @@ if __name__ == '__main__':
             # Step 4.3: Take a step in the environment
             next_state, reward, done, _ = env.step(action)
             
-            # Step 4.4: Update RL agent using experience (Replay buffer can be added here)
-            rl_agent.update_policy(None, None)  # Simplified, can add experience replay buffer
+            # Step 4.4: Store transition in replay buffer
+            rl_agent.store_transition(state, action, reward, next_state, done)
+
+            # Step 4.5: Update RL agent using experience from the replay buffer
+            rl_agent.update_policy()
 
             # Step 4.5: Use Solver Agent to adjust portfolio
             optimized_weights = solver_agent.optimize_risk(action)

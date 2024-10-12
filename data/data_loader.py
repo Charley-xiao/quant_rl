@@ -37,6 +37,8 @@ class DataLoader:
         :param columns_to_normalize: List of column names to normalize.
         :return: Normalized data as a NumPy array.
         """
+        if 'Date' in data.columns:
+            data = data.drop(columns=['Date'])
         if columns_to_normalize is not None:
             data[columns_to_normalize] = self.scaler.fit_transform(data[columns_to_normalize])
 

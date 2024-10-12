@@ -1,9 +1,9 @@
 data:
   source: "csv"  # Options: "csv", "yfinance"
   csv_path: "stock_data.csv"
-  tickers: ["AAPL", "GOOGL"]
-  start_date: "2020-01-01"
-  end_date: "2023-01-01"
+  tickers: ["MSFT", "AAPL", "GOOGL", "AMZN", "FB", "TSLA", "NVDA", "AMD", "INTC", "QCOM"]
+  start_date: "2023-01-01"
+  end_date: "2023-12-29"
 
 env:
   initial_balance: 1000000

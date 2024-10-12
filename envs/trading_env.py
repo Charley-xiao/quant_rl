@@ -43,9 +43,11 @@ class TradingEnv:
         # Check if the episode is done
         if self.current_step >= len(self.data) - 1:
             self.done = True
+            print(f'This episode is done.')
 
         # Calculate the reward based on the previous portfolio
         reward = self.calculate_reward(action)
+        #print(f'{reward=}')
 
         # Update portfolio weights based on the action
         self.portfolio_weights = action
@@ -55,6 +57,7 @@ class TradingEnv:
 
         # Get the next state
         next_state = self._get_state()
+        #print(f'{next_state=}')
 
         return next_state, reward, self.done, {}
 

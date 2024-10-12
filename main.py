@@ -70,18 +70,23 @@ if __name__ == '__main__':
         
         for step in range(len(train_data) - 1):
             # Step 4.1: Use RL Agent to choose action (new portfolio weights)
+            #print('=== RL Agent choosing action ===')
             action = rl_agent.choose_action(state)
             
             # Step 4.2: Rebalance portfolio based on RL agent's action
+            #print('=== Rebalancing portfolio ===')
             portfolio_value = portfolio.rebalance(action, state)
 
             # Step 4.3: Take a step in the environment
+            #print('=== Taking a step ===')
             next_state, reward, done, _ = env.step(action)
             
             # Step 4.4: Store transition in replay buffer
+            #print('=== Storing transition ===')
             rl_agent.store_transition(state, action, reward, next_state, done)
 
             # Step 4.5: Update RL agent using experience from the replay buffer
+            #print('=== Updating policy ===')
             rl_agent.update_policy()
 
             # # Step 4.5: Use Solver Agent to adjust portfolio
@@ -94,6 +99,7 @@ if __name__ == '__main__':
             # Step 4.7: Accumulate total reward
             total_reward += reward
             state = next_state
+            # input()
             
             if done:
                 break

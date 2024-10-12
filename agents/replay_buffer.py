@@ -23,6 +23,7 @@ class ReplayBuffer:
         self.terminal_memory[index] = 1 - done  # 1 if not done (continue)
 
         self.memory_counter += 1
+        # print(f'Now having {self.memory_counter} memory entries.')
 
     def sample_buffer(self, batch_size):
         max_memory = min(self.memory_counter, self.memory_size)

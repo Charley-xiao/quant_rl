@@ -15,10 +15,13 @@ class Portfolio:
         :return: Updated portfolio value.
         """
         total_value = self.balance
+        #print(f'{total_value=}')
         self.asset_holdings = total_value * new_weights / asset_prices
+        #print(f'{self.asset_holdings=}')
 
         # Update portfolio value
         self.portfolio_value = np.sum(self.asset_holdings * asset_prices)
+        #print(f'{self.portfolio_value=}')
 
         return self.portfolio_value
 

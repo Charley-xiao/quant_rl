@@ -84,12 +84,12 @@ if __name__ == '__main__':
             # Step 4.5: Update RL agent using experience from the replay buffer
             rl_agent.update_policy()
 
-            # Step 4.5: Use Solver Agent to adjust portfolio
-            optimized_weights = solver_agent.optimize_risk(action)
-            action = solver_agent.adjust_portfolio(portfolio, optimized_weights)
+            # # Step 4.5: Use Solver Agent to adjust portfolio
+            # optimized_weights = solver_agent.optimize_risk(action)
+            # action = solver_agent.adjust_portfolio(portfolio, optimized_weights)
 
-            # Step 4.6: Predict market trends with Market Observer
-            market_trend = market_observer.predict_trends(state)
+            # # Step 4.6: Predict market trends with Market Observer
+            # market_trend = market_observer.predict_trends(state)
             
             # Step 4.7: Accumulate total reward
             total_reward += reward
